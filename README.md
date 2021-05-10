@@ -14,6 +14,26 @@ RDPass dependencies:
 * py-bcrypt
 * pycryptodome
 
-Versions that I used are listed in requirements.txt.
-Use pip install -r requirements.txt to install the dependencies.
+Versions that I used are listed in requirements.txt. Run this command:
+    pip install -r requirements.txt to install the dependencies.
+
+## Usage
+
+To run:
+
+    python kivy_rdpass.py
+
+The password for the "general" database: "1234"
+
+## Database
+
+The databases and the configuration files are stored in ./db_storage and ./config_storage, respectively.
+
+## To-do
+
+* ~~Add confirm delete message dialog before deleting entry~~
+* ~~Add search bar and search function in the menu~~
+* Need to add a delete database function, currently database can be deleted directly from ./db_storage
+
+
 

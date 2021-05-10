@@ -1,0 +1,1324 @@
+#:kivy 2.0.0
+
+
+<LsSpinnerOption>:
+    background_color: root.button_norm_color if self.state == 'down' else root.spinner_norm_color
+    background_normal: ''
+    background_down: ''
+    height: dp(35 * self.trans_font_scale)
+    font_name: root.font_hn_medium
+    font_size: dp(13 * self.trans_font_scale)            # Need to change this, doesn't get updated automatically
+    color: [1,1,1,1]
+
+
+
+<LoginScreen>
+    name: 'loginscreen'
+    BoxLayout:
+
+        status_label: status_label
+
+        canvas.before:
+            Color:
+                rgba: root.screen_bg_color    #2970cb  #[0.58, 0.725, 0.914, 1]    #94b9e9
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        orientation: "vertical"
+        spacing: self.width * 0.025
+        padding: [self.width * 0.075, self.height * 0.075]  # Need to be a percentage of height/width for the resolution check to work
+
+        Placeholder:
+            size_hint: (1, 0.075)
+
+        Image:
+            source: './ui/RD_pass_logo_extra_small.png'
+            size_hint: (0.35, 0.3)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+            allow_stretch: True
+
+        Label:
+            text: 'RD Pass'
+            size_hint: (1, 0.075)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+            font_size: dp(root.fin_font_scale_fac * 34)
+            font_name: root.font_hn_medium
+
+        Label:
+            text: 'Welcome Back.'
+            size_hint: (1, 0.025)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+            font_size: dp(root.fin_font_scale_fac * 20)
+            font_name: root.font_hn_light
+            color: [0.906, 0.906, 0.906, 1]   #e7e7e7
+
+        Label:
+            id: status_label
+            text: ''
+            size_hint: (1, 0.15)
+            pos_hint: {'center_x': 0.5, 'center_y': 0.1}
+            font_name: root.font_hn
+            font_size: dp(root.fin_font_scale_fac * 15)
+            valign: 'bottom'
+
+
+        Spinner:
+            id: db_selector
+            size_hint: (0.75, 0.075)
+            font_size: dp(root.fin_font_scale_fac * 15)
+            font_name: root.font_hn_medium
+            background_normal: ''
+            background_disabled_normal: ''
+            background_down: ''
+            background_color: [1,1,1,0] #[0.161, 0.439, 0.796, 1]
+            pos_hint: {'center_x': 0.5}
+            values: root.db_avail_list
+            text: root.db_avail_list[0] if len(root.db_avail_list) == 1 else 'Press to select a database'
+            option_cls: 'LsSpinnerOption'       # Can't figure out how to use this
+            halign: 'left'
+            valign: 'bottom'
+            canvas.after:
+                Color:
+                    rgba: root.password_field_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(root.fin_font_scale_fac * 5)]
+            on_text:
+                self.color = [1,1,1,1]                #Change back to white again in case it is turned to red
+
+        LsPWInput:
+            id: password_input
+            multiline: False
+            size_hint: (0.75, 0.075)
+            pos_hint: {'center_x': 0.5}
+            text: 'Password'
+            font_name: root.font_hn_medium
+            font_size: dp(root.fin_font_scale_fac * 15)
+            background_normal: ''
+            background_disabled_normal: ''
+            background_active: ''
+            background_color: [1,1,1,0]
+            padding: [dp(root.fin_font_scale_fac*16),dp(root.fin_font_scale_fac*7),dp(root.fin_font_scale_fac*16),0]
+            foreground_color: root.button_grayout_color
+            disabled_foreground_color: root.button_text_grayout_color
+            halign: 'center'
+            canvas.after:
+                Color:
+                    rgba: root.password_field_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(root.fin_font_scale_fac * 5)]
+            on_text_validate:
+                root.option_select_db_login()
+
+        Placeholder:
+            size_hint: (1, 0.02)
+
+        Button:
+            id: login_button
+            text: 'Login'
+            size_hint: (0.5, 0.075)
+            font_size: dp(root.fin_font_scale_fac * 14)
+            font_name: root.font_hn_medium
+            pos_hint: {'center_x': 0.5}
+            background_normal: ''
+            background_down: ''
+            background_color: [1,1,1,0]
+            color: [1,1,1,1]
+            disabled: False
+            canvas.before:
+                Color:
+                    rgba: root.login_button_color
+                RoundedRectangle:
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(root.fin_font_scale_fac * 5)]
+
+            on_press:
+                root.login_button_color = root.button_press_color
+
+            on_release:
+                root.login_button_color = root.button_norm_color
+                root.option_select_db_login()
+
+        Button:
+            id: newdb_button
+            text: 'Create New Database'
+            size_hint: (0.5, 0.075)
+            font_size: dp(root.fin_font_scale_fac * 14)
+            font_name: root.font_hn_medium
+            pos_hint: {'center_x': 0.5}
+            background_normal: ''
+            background_down: ''
+            background_color: [1,1,1,0]
+            color: [1,1,1,1]
+            disabled: False
+            canvas.before:
+                Color:
+                    rgba: root.cdb_button_color
+                RoundedRectangle:
+                    id: back_rect
+                    pos: self.pos
+                    size: self.size
+                    radius: [dp(root.fin_font_scale_fac * 5)]
+
+            on_press:
+                root.cdb_button_color = root.button_press_color
+
+            on_release:
+                root.cdb_button_color = root.button_norm_color
+                root.option_create_new_db()
+
+
+
+<SwipeToDeleteItem>:
+    swipe_distance: self.width * 0.4
+    size_hint_y: None
+    #width: contentitem.width
+    height: contentitem.height
+    anchor: 'right'
+    opening_time: 1
+
+    MDCardSwipeLayerBox:
+        #md_bg_color: [1,1,0,1]
+        padding: [self.width * 0.85, 0, 0, 0]    # For the Trash can icon
+        height: contentitem.height
+        canvas.before:
+            Color:
+                rgba:  [1,0.2196,0.1372,0.8]     # Warning red
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        MDIconButton:
+            md_bg_color: [0,0,0,0]
+            icon: "trash-can"
+            size_hint_x: None
+            size_hint_y: None
+            disabled: False
+            focus_behavior: False
+            _no_ripple_effect: True
+            user_font_size: dp(root.fin_font_scale_fac_propagate * 25)
+            height: contentitem.height * root.fin_font_scale_fac_propagate
+            pos_hint:{"center_y": 0.5}
+            on_release: app.root.get_screen('menuscreen').show_confirm_delete_dialog_menu(root, root.text)
+
+
+    MDCardSwipeFrontBox:
+        elevation: 10
+        height: contentitem.height
+
+        MyRowListItem:
+            id: contentitem
+            text_color: [1,0,0,1]
+            secondary_text_color: [1,0,0,1]
+            background_normal: ''
+            text: root.text
+            secondary_text: root.secondary_text
+            #bg_color: [1,1,0,0.2]
+            #focus_behavior: True
+            _no_ripple_effect: True
+            #user_font_size: dp(root.fin_font_scale_fac_propagate * 50)
+            height: dp(root.fin_font_scale_fac_propagate * 72)
+            canvas.before:
+                Color:
+                    rgba: self.highlight_color
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+            IconLeftWidget:            # MDIconButton
+                id: contentitemicon
+                size_hint_x: None
+                size_hint_y: None
+                pos_hint: {"center_x":0.5, "center_y": 0.5}
+                disabled: False
+                icon: 'lock'
+                theme_text_color: "Custom"
+                focus_behavior: False
+                text_color: [1,1,1,1]
+                # text_color: [0,0,0,0.3]
+                # md_bg_color: [1,1,0,1]
+                user_font_size: dp(root.fin_font_scale_fac_propagate * 19)
+                height: dp(root.fin_font_scale_fac_propagate * 31)
+                width: dp(root.fin_font_scale_fac_propagate * 31)
+                padding: 0
+                canvas.before:
+                    Color:
+                        rgba: root.icon_shadow_color  #[0.161, 0.439, 0.796, 0.5]
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(root.fin_font_scale_fac_propagate * 9)]
+
+
+<MenuScreen>:
+    name: 'menuscreen'
+    id: 'menuscreen'
+
+    BoxLayout:
+        orientation: "vertical"
+        spacing: dp(0)
+
+        TitleBar:
+            id: toolbar
+            elevation: 1
+            size_hint: (1, 0.125)
+            padding: [0.03 * self.width, 0.1 * self.height]
+            title: "RD Pass"
+            #font_size: dp(root.fin_font_scale_fac * 50)
+            #font_name: root.font_hn_bold
+            md_bg_color: [0.161, 0.439, 0.796, 1]   #2970cb
+            #left_action_items: [["menu", "This is the navigation"]]
+            #right_action_items: [["dots-vertical", lambda x: app.callback(x), "this is the More Actions"]]
+
+            TitleBarAddButton:
+                size_hint_x: None
+                pos_hint: {"center_x": 1.0, "center_y": 0.5}
+                icon: 'plus'
+                theme_text_color: "Custom"
+                text_color: [1, 1, 1, 1]
+                md_bg_color: [0.125, 0.224, 0.631, 0.5]
+                user_font_size: dp(root.fin_font_scale_fac * 32)
+                size: dp(root.fin_font_scale_fac*32), dp(root.fin_font_scale_fac * 32)
+                padding: 0
+
+        BoxLayout:
+            orientation: "horizontal"
+            spacing: dp(0)
+            size_hint: (1, 0.125)
+            padding: dp(root.fin_font_scale_fac * 15)
+
+            canvas.before:
+                Color:
+                    rgba: [1,1,1, 0.75]  #[0.161, 0.439, 0.796, 0.2]
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+                Color:
+                    rgba: 0, 0, 0, 0.15
+                Line:
+                    points: (self.x + dp(root.fin_font_scale_fac * 0), self.y, self.x + self.width - dp(0 * root.fin_font_scale_fac), self.y)
+                    width: root.fin_font_scale_fac * 1
+
+            RelativeLayout:
+                size_hint: (1, 1)
+
+                SearchBarFieldRound:
+                    id: searchbar_field
+                    size_hint: (1, 1)
+                    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                    icon_left: "magnify"
+                    #icon_left_color: [0,0,0,1]
+                    #icon_right: "close-circle"
+                    #icon_right_color: [0,0,0,1]
+                    hint_text: "Search"
+                    foreground_color: [0,0,0,0.8]
+                    text: ''
+                    font_size: dp(root.fin_font_scale_fac * 17)
+
+                MDIconButton:
+                    id: searchbar_clearbutton
+                    icon: "close-circle"
+                    md_bg_color: [0,0,0,0]
+                    theme_text_color: "Custom"
+                    focus_behavior: False
+                    text_color: [0,0,0,0.3]
+                    user_font_size: dp(root.fin_font_scale_fac * 24)
+                    ripple_scale: .5
+                    pos_hint: {'center_y': .5}
+                    padding: 0
+                    size: dp(root.fin_font_scale_fac * 24), dp(root.fin_font_scale_fac * 24)
+                    pos: searchbar_field.width - self.width - dp(root.fin_font_scale_fac * 5), 0
+                    on_release:
+                        searchbar_field.text = ''
+
+        ScrollView:
+            do_scroll_x: False
+            scroll_timeout: 10
+            MDList:
+                id: md_list
+                padding: 0
+
+
+<EntryScreen>
+    name: 'entryscreen'
+    id: 'entryscreen'
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0
+        spacing: 0
+
+        canvas.before:
+            Color:
+                rgba: [0,0,0,0.01]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Placeholder:
+            size_hint: (1, 0.04)
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.135)
+            pos_hint: {'center_x': 0.5}
+
+            MDIconButton:
+                id: contentitemicon
+                size_hint_x: None
+                size_hint_y: None
+                pos_hint: {"center_x":0.75, "center_y": 0.270}
+                disabled: True
+                icon: 'lock'
+                theme_text_color: "Custom"
+                focus_behavior: False
+                text_color: [1,1,1,1]
+                # md_bg_color: [1,1,0,1]
+                user_font_size: dp(root.fin_font_scale_fac * 21) #19
+                height: dp(root.fin_font_scale_fac * 33)   #31
+                width:  dp(root.fin_font_scale_fac * 33)
+                padding: 0
+                canvas.before:
+                    Color:
+                        rgba: root.icon_shadow_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(root.fin_font_scale_fac * 9)]
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 40)
+
+            Label:
+                id: entrylabel
+                size_hint_x: None
+                size_hint_y: None
+                text: root.title_text
+                font_name: root.font_hn_medium
+                font_size: dp(root.fin_font_scale_fac * 40)
+                #size_hint: (0.75, 0.15)
+                #size_hint_y: None
+                size: self.texture_size
+                #text_size: self.width, None
+                #pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                halign: 'left'
+                color:[0,0,0,0.8]
+
+        Placeholder:
+            size_hint: (1, 0.075)
+
+        BoxLayout:                                      # Username Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: user_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Username / Email"
+                text: root.user_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: True
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 5)
+
+            MDIconButton:
+                id: user_copybutton
+                size_hint: None, None
+                pos_hint: {'center_x': 0, 'center_y': 0.5}
+                icon: 'content-copy'
+                theme_text_color: "Custom"
+                text_color: [0, 0, 0, 0.2]
+                #md_bg_color: [0.161, 0.439, 0.796, 0.51]
+                user_font_size: dp(root.fin_font_scale_fac * 20)
+                size: dp(root.fin_font_scale_fac * 20), dp(root.fin_font_scale_fac * 20)
+                padding: 0
+                #md_bg_color_down: [0,0,0,0]
+                on_press: root.copybutton_onpress(copyfield='user_simpfield')
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+        BoxLayout:                                      # Password Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: pswd_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Password"
+                text: root.pswd_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                disabled: False
+                readonly: True
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 5)
+
+            MDIconButton:
+                id: pswd_copybutton
+                size_hint: None, None
+                pos_hint: {'center_x': 0, 'center_y': 0.5}
+                icon: 'content-copy'
+                theme_text_color: "Custom"
+                text_color: [0, 0, 0, 0.2]
+                user_font_size: dp(20 * root.fin_font_scale_fac)
+                size: dp(root.fin_font_scale_fac * 20), dp(root.fin_font_scale_fac * 20)
+                padding: 0
+                on_press: root.copybutton_onpress(copyfield='pswd_simpfield')
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+        BoxLayout:                                      # Category Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: cate_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Category"
+                text: root.cate_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: True
+                # suggestion_flag: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 5)
+
+            MDIconButton:
+                id: cate_copybutton
+                size_hint: None, None
+                pos_hint: {'center_x': 0, 'center_y': 0.5}
+                icon: 'content-copy'
+                theme_text_color: "Custom"
+                text_color: [0, 0, 0, 0.2]
+                user_font_size: dp(root.fin_font_scale_fac * 20)
+                size: dp(root.fin_font_scale_fac * 20), dp(root.fin_font_scale_fac * 20)
+                padding: 0
+                on_press: root.copybutton_onpress(copyfield='cate_simpfield')
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+        BoxLayout:                                      # Description Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.22)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: desc_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Description"
+                text: root.desc_text
+                font_size: dp(root.fin_font_scale_fac * 16)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                max_text_length: 200
+                multiline: True
+                disabled: True
+
+            InTextPlaceholder:
+                font_size: root.fin_font_scale_fac * dp(5)
+
+            MDIconButton:
+                id: desc_copybutton
+                size_hint: None, None
+                pos_hint: {'center_x': 0, 'center_y': 0.35}
+                icon: 'content-copy'
+                theme_text_color: "Custom"
+                text_color: [0, 0, 0, 0.2]
+                user_font_size: dp(root.fin_font_scale_fac * 20)
+                size: dp(root.fin_font_scale_fac * 20), dp(root.fin_font_scale_fac * 20)
+                padding: 0
+                on_press: root.copybutton_onpress(copyfield='desc_simpfield')
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)          # Slightly longer than above
+            pos_hint: {'center_x': 0.5}
+
+            MDIconButton:
+                id: backbutton1
+                size_hint_x: None
+                size_hint_y: None
+                pos_hint: {'center_x': 0, 'center_y': 0.5}
+                icon: 'arrow-left'
+                theme_text_color: "Custom"
+                text_color: [0, 0, 0, 0.3]
+                md_bg_color: [0.161, 0.439, 0.796, 0.01]
+                user_font_size:  dp(root.fin_font_scale_fac * 28)
+                size: dp(root.fin_font_scale_fac * 28), dp(root.fin_font_scale_fac * 28)
+                padding: 0
+                on_press:  app.root.current = 'menuscreen'
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 10)
+
+            Button:
+                id: backbutton2
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Back'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.3]
+                on_press:  app.root.current = 'menuscreen'
+
+            Label:
+                text: ' '    #Placeholder
+                font_size: dp(root.fin_font_scale_fac * 10)
+                #size_hint_x: None
+                size_hint_y: None
+                size_x: self.parent.size[0] * 0.5
+
+            Button:
+                id: updatebutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Update'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.3]
+                on_press:  root.updatebutton_onpress()
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+
+<InTextPlaceholder>
+    text: ' '    # Placeholder
+    size_hint_x: None
+    size_hint_y: None
+    size: self.texture_size
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+
+<Placeholder>
+    text: ''    # Placeholder
+    pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+    size_hint: (1, 0.0135)
+
+
+<AddEntryScreen>
+    name: 'addentryscreen'
+    id: 'addentryscreen'
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0
+        spacing: 0
+
+        canvas.before:
+            Color:
+                rgba: [0,0,0,0.01]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Placeholder:
+            size_hint: (1, 0.02)
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.1)
+            pos_hint: {'center_x': 0.5}
+
+            MDIconButton:
+                id: contentitemicon
+                size_hint_x: None
+                size_hint_y: None
+                pos_hint: {"center_x":0.75, "center_y": 0.28}
+                disabled: True
+                icon: 'lock'
+                theme_text_color: "Custom"
+                focus_behavior: False
+                text_color: [1,1,1,1]
+                # md_bg_color: [1,1,0,1]
+                user_font_size: dp(root.fin_font_scale_fac * 19)
+                height: dp(root.fin_font_scale_fac * 31)
+                width:  dp(root.fin_font_scale_fac * 31)
+                padding: 0
+                canvas.before:
+                    Color:
+                        rgba: [0.161, 0.439, 0.796, 0.5] #root.icon_shadow_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(root.fin_font_scale_fac * 9)]
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 32)
+
+            Label:
+                id: entrylabel
+                size_hint_x: None
+                size_hint_y: None
+                text: root.heading_text
+                font_name: root.font_hn_medium
+                font_size: dp(root.fin_font_scale_fac * 32)
+                size: self.texture_size
+                #pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                halign: 'left'
+                color:[0,0,0,0.8]
+
+        Placeholder:
+            size_hint: (1, 0.075)
+
+
+        BoxLayout:                                      # Title Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: titl_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Title"
+                text: root.titl_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+
+
+        BoxLayout:                                      # Username Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: user_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Username / Email"
+                text: root.user_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                text: ' '
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+
+        BoxLayout:                                      # Password Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: pswd_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Password"
+                text: root.pswd_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+
+        BoxLayout:                                      # Re-enter Password Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: repd_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Re-enter Password"
+                text: root.repd_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+
+        BoxLayout:                                      # Category Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: cate_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Category"
+                text: root.cate_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: False
+                readonly: False
+                suggestion_flag: True
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+
+        BoxLayout:                                      # Description Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.16)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: desc_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Description"
+                text: root.desc_text
+                font_size: dp(root.fin_font_scale_fac * 16)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                max_text_length: 200
+                multiline: True
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.08)          # Slightly longer than above
+            pos_hint: {'center_x': 0.5}
+
+            Button:
+                id: cancelbutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Cancel'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.3]
+                on_press:  app.root.current = 'menuscreen'
+
+            Label:
+                text: ' '    #Placeholder
+                font_size: dp(root.fin_font_scale_fac * 10)
+                #size_hint_x: None
+                size_hint_y: None
+                size_x: self.parent.size[0] * 0.5
+
+            Button:
+                id: confirmbutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Confirm'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.3]
+                on_press:  root.confirmbutton_onpress()
+
+        Placeholder:
+
+
+
+
+<UpdateEntryScreen>
+    name: 'updateentryscreen'
+    id: 'updateentryscreen'
+
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0
+        spacing: 0
+
+        canvas.before:
+            Color:
+                rgba: [0,0,0,0.01]
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Placeholder:
+            size_hint: (1, 0.04)
+
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.135)
+            pos_hint: {'center_x': 0.5}
+
+            MDIconButton:
+                id: contentitemicon
+                size_hint_x: None
+                size_hint_y: None
+                pos_hint: {"center_x":0.75, "center_y": 0.270}
+                disabled: True
+                icon: 'lock'
+                theme_text_color: "Custom"
+                focus_behavior: False
+                text_color: [1,1,1,1]
+                # md_bg_color: [1,1,0,1]
+                user_font_size: dp(root.fin_font_scale_fac * 21) #19
+                height: dp(root.fin_font_scale_fac * 33)   #31
+                width:  dp(root.fin_font_scale_fac * 33)
+                padding: 0
+                canvas.before:
+                    Color:
+                        rgba: root.icon_shadow_color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(root.fin_font_scale_fac * 9)]
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 40)
+
+            Label:
+                id: entrylabel
+                size_hint_x: None
+                size_hint_y: None
+                text: root.title_text
+                font_name: root.font_hn_medium
+                font_size: dp(root.fin_font_scale_fac * 40)
+                size: self.texture_size
+                #text_size: self.width, None
+                halign: 'left'
+                color:[0,0,0,0.8]
+
+            Label:
+                id: entrylabel2
+                size_hint_x: None
+                size_hint_y: None
+                text: ' Update'
+                font_name: root.font_hn_medium
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size: self.texture_size
+                #text_size: self.width, None
+                halign: 'left'
+                color:[0,0,0,0.3]
+
+        Placeholder:
+            size_hint: (1, 0.075)
+
+        BoxLayout:                                      # Username Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: user_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Username / Email"
+                text: root.user_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+
+        BoxLayout:                                      # Password Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: pswd_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Password"
+                text: root.pswd_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                multiline: False
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+
+        BoxLayout:                                      # Re-enter Password Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: repd_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Re-enter Password"
+                text: root.repd_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+        BoxLayout:                                      # Category Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.11)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: cate_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Category"
+                text: root.cate_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: False
+                readonly: False
+                suggestion_flag: True
+                write_tab: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+        BoxLayout:                                      # Description Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.22)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: desc_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Description"
+                text: root.desc_text
+                font_size: dp(root.fin_font_scale_fac * 16)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                max_text_length: 200
+                multiline: True
+                disabled: False
+                readonly: False
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 5)
+
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)          # Slightly longer than above
+            pos_hint: {'center_x': 0.5}
+
+            Button:
+                id: cancelbutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Cancel'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.3]
+                on_press:  app.root.current = 'menuscreen'
+
+            Label:
+                text: ' '    #Placeholder
+                font_size: dp(root.fin_font_scale_fac * 10)
+                #size_hint_x: None
+                size_hint_y: None
+                size_x: self.parent.size[0] * 0.5
+
+            Button:
+                id: deletebutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Delete'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.15]
+                on_press:  root.deletebutton_onpress()
+
+            Label:
+                text: ' '    #Placeholder
+                font_size: dp(root.fin_font_scale_fac * 10)
+                #size_hint_x: None
+                size_hint_y: None
+                size_x: self.parent.size[0] * 0.5
+
+            Button:
+                id: savebutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Save'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.3]
+                on_press:  root.savebutton_onpress()
+
+        Placeholder:
+            size_hint: (1, 0.025)
+
+
+
+
+<CreateDBScreen>
+    name: 'createdbscreen'
+    BoxLayout:
+        orientation: "vertical"
+        padding: 0
+        spacing: 0
+
+        canvas.before:
+            Color:
+                rgba: root.screen_bg_color
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Placeholder:
+            size_hint: (1, 0.08)
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.1)
+            pos_hint: {'center_x': 0.5}
+
+            MDIconButton:
+                id: contentitemicon
+                size_hint_x: None
+                size_hint_y: None
+                pos_hint: {"center_x":0.75, "center_y": 0.28}
+                disabled: True
+                icon: 'database'
+                theme_text_color: "Custom"
+                focus_behavior: False
+                text_color: [1,1,1,1]
+                user_font_size: dp(root.fin_font_scale_fac * 19) #19
+                height: dp(root.fin_font_scale_fac * 31)
+                width:  dp(root.fin_font_scale_fac * 31)
+                padding: 0
+                canvas.before:
+                    Color:
+                        rgba: [0.161, 0.439, 0.796, 0.5]  # Fixed icon shadow color
+                    RoundedRectangle:
+                        pos: self.pos
+                        size: self.size
+                        radius: [dp(root.fin_font_scale_fac * 9)]
+
+            InTextPlaceholder:
+                font_size: dp(root.fin_font_scale_fac * 32)
+
+            Label:
+                id: entrylabel
+                size_hint_x: None
+                size_hint_y: None
+                text: root.heading_text
+                font_name: root.font_hn_medium
+                font_size: dp(root.fin_font_scale_fac * 32)
+                #size_hint: (0.75, 0.15)
+                #size_hint_y: None
+                size: self.texture_size
+                #text_size: self.width, None
+                #pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                halign: 'left'
+                color:[0,0,0,0.8]
+
+        Placeholder:
+            size_hint: (1, 0.05)
+
+        Placeholder:
+            size_hint: (0.775, 0.10)
+
+        BoxLayout:                                      # DB name Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: dbnm_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Enter the name of the database:"
+                text: root.dbnm_text
+                font_size: dp(root.fin_font_scale_fac * 20)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                text: ' '
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+            size_hint: (0.775, 0.08)
+
+        BoxLayout:                                      # Master Key Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: dbmk_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Enter a master key for the database:"
+                text: root.dbmk_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                text: ' '
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+
+        BoxLayout:                                      # Re-enter Password Box
+            orientation: "horizontal"
+            size_hint: (0.775, 0.10)
+            pos_hint: {'center_x': 0.5}
+
+            SimpleHintTextField:
+                id: remk_simpfield
+                size_hint: (0.75, 1)
+                pos_hint: {'center_x': 0.5, 'center_y': 0.5}
+                corn_hint_text: "Re-enter the master key:"
+                text: root.remk_text
+                font_size: dp(root.fin_font_scale_fac * 18)
+                line_color_focus: [0.161, 0.439, 0.796, 1]
+                multiline: False
+                password: True
+                password_hide: True
+                disabled: False
+                write_tab: False
+
+            InTextPlaceholder:
+                text: ' '
+                font_size: dp(root.fin_font_scale_fac * 18)
+
+        Placeholder:
+            size_hint: (0.775, 0.16)
+
+        BoxLayout:
+            orientation: "horizontal"
+            size_hint: (0.775, 0.08)          # Slightly longer than above
+            pos_hint: {'center_x': 0.5}
+
+            Button:
+                id: backbutton2
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Cancel'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.4]
+                on_press:  app.root.current = 'loginscreen'
+
+            Label:
+                text: ' '    #Placeholder
+                font_size: dp(root.fin_font_scale_fac * 10)
+                #size_hint_x: None
+                size_hint_y: None
+                size_x: self.parent.size[0] * 0.5
+
+            Button:
+                id: confirmbutton
+                background_normal: ''
+                background_color: [0,0,0,0]
+                text: 'Confirm'
+                font_size: dp(root.fin_font_scale_fac * 20)
+                size_hint_x: None
+                size_hint_y: None
+                size: self.texture_size
+                pos_hint: {'center_x': 0.75, 'center_y': 0.5}
+                color: [0, 0, 0, 0.4]
+                on_press:  root.confirmbutton_onpress()
+
+        Placeholder:
+            size_hint: (0.775, 0.0335)
