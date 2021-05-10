@@ -14,6 +14,6 @@ RDPass dependencies:
 * py-bcrypt
 * pycryptodome
 
-Versions that I used are listed in requirements.txt
-Run pip install -r requirements.txt
+Versions that I used are listed in requirements.txt.
+Use pip install -r requirements.txt to install the dependencies.
 
