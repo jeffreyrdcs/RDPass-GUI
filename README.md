@@ -19,17 +19,20 @@ Versions I used are listed in requirements.txt. Run this command to install the 
 
     pip install -r requirements.txt
 
+
 ## Usage
 
-To run:
+To run the app:
 
     python kivy_rdpass.py
 
 The password for the "general" testing database: "1234".
 
+
 ## Database
 
 The databases and the configuration files are stored in ./db_storage and ./config_storage, respectively.
+
 
 ## To-do
 
