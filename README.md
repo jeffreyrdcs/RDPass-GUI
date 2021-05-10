@@ -33,7 +33,7 @@ The databases and the configuration files are stored in ./db_storage and ./confi
 
 * ~~Add confirm delete message dialog before deleting entry~~
 * ~~Add search bar and search function in the menu~~
-* Need to add a delete database function, currently database can be deleted directly from ./db_storage
+* Add a delete database function, currently database can be deleted directly from ./db_storage
 
 
 
