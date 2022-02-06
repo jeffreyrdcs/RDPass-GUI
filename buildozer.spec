@@ -4,7 +4,7 @@ title = RDPass
 
 package.name = rdpass
 
-package.domain = com.rdpass
+package.domain = org.rdpass
 
 source.dir = .
 
@@ -31,17 +31,17 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3, kivy, kivymd,pillow,sqlite3,py-bcrypt,pycryptodome
+requirements = python3, kivy, kivymd,pillow,sqlite3,py-bcrypt,pycryptodome, android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-#presplash.filename = %(source.dir)s/assets/presplash.png
+presplash.filename = %(source.dir)s/ui/RD_pass_logo_large.png
 
 # (str) Icon of the application
-#icon.filename = %(source.dir)s/assets/icon.png
+icon.filename = %(source.dir)s/ui/RD_pass_logo_extra_small.png
 
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
@@ -74,7 +74,7 @@ fullscreen = 0
 # red, blue, green, black, white, gray, cyan, magenta, yellow, lightgray,
 # darkgray, grey, lightgrey, darkgrey, aqua, fuchsia, lime, maroon, navy,
 # olive, purple, silver, teal.
-#android.presplash_color = purple
+android.presplash_color = blue
 
 # (string) Presplash animation using Lottie format.
 # see https://lottiefiles.com/ for examples and https://airbnb.design/lottie/
