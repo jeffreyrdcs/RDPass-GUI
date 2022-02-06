@@ -53,9 +53,9 @@ class RdpassApp(MDApp):
         The main RD Pass app
     '''
     wininit = (450, 650)
-    Window.size = wininit
-    Window.minimum_width = wininit[0]
-    Window.minimum_height = wininit[1]
+    #Window.size = wininit
+    #Window.minimum_width = wininit[0]
+    #Window.minimum_height = wininit[1]
 
     def build(self):
         '''
