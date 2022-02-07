@@ -24,7 +24,7 @@ Versions I used are listed in requirements.txt. Run this command to install the 
 
 To run the app:
 
-    python kivy_rdpass.py
+    python main.py
 
 The password for the "general" testing database: "1234".
 
