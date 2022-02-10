@@ -16,6 +16,12 @@ from screens.entryscreen import EntryScreen
 from screens.addentryscreen import AddEntryScreen
 from screens.updateentryscreen import UpdateEntryScreen
 from screens.createdbscreen import CreateDBScreen
+from kivy.utils import platform
+
+if platform == "android":
+    from android.permissions import request_permissions, Permission
+    request_permissions([Permission.READ_EXTERNAL_STORAGE, Permission.WRITE_EXTERNAL_STORAGE])
+
 
 # RD pass requirements
 # from RDconfig import rdstatus, rdconfig
@@ -53,9 +59,9 @@ class RdpassApp(MDApp):
         The main RD Pass app
     '''
     wininit = (450, 650)
-    Window.size = wininit
-    Window.minimum_width = wininit[0]
-    Window.minimum_height = wininit[1]
+    #Window.size = wininit
+    #Window.minimum_width = wininit[0]
+    #Window.minimum_height = wininit[1]
 
     def build(self):
         '''
