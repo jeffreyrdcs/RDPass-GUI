@@ -24,7 +24,7 @@ Versions I used are listed in requirements.txt. Run this command to install the 
 
 To run the app:
 
-    python kivy_rdpass.py
+    python main.py
 
 The password for the "general" testing database: "1234".
 
@@ -41,4 +41,8 @@ The databases and the configuration files are stored in ./db_storage and ./confi
 * Add a delete database function, currently database can be deleted directly from ./db_storage
 
 
+## Android App
 
+The android app of this project is created (Converted By Raunak Raj
+
+<a href='https://github.com/nkray-raunak123/RDPass-GUI/releases/download/0.1/rdpass-0.1-armeabi-v7a.apk'>Download Now</a>
